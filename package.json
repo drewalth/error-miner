@@ -1,0 +1,14 @@
+{
+  "name": "error-miner",
+  "version": "1.0.0",
+  "author": "Drew Althage",
+  "description": "Automated error mining and logging.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "chromedriver": "^81.0.0",
+    "selenium-webdriver": "^4.0.0-alpha.7"
+  }
+}
