@@ -5,10 +5,21 @@
   "description": "Automated error mining and logging.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "dev": "nodemon src/app.js",
+    "start": "node dist/app.js",
+    "flow": "flow",
+    "flow:check": "flow check ./src/",
+    "flow:build": "flow-remove-types ./src/ -d ./dist/ --all --pretty",
+    "flow:deps": "flow-typed install"
   },
   "dependencies": {
     "chromedriver": "^81.0.0",
     "selenium-webdriver": "^4.0.0-alpha.7"
+  },
+  "devDependencies": {
+    "flow-bin": "^0.125.1",
+    "flow-remove-types": "^2.125.1",
+    "flow-typed": "^3.1.0",
+    "nodemon": "^2.0.4"
   }
 }
