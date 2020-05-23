@@ -1,45 +1,74 @@
-const { Builder } = require('selenium-webdriver');
+const { Builder, By, until } = require('selenium-webdriver');
 
-const clickRandomTarget = async (url: string, keyword: string, interval: number = 5000) => {
+const PROVIDED_URL = process.env.URL
+const PROVIDED_USERNAME = process.env.USERNAME
+const PROVIDED_PASSWORD = process.env.PASSWORD
 
-  let driver = await new Builder().forBrowser('chrome').build();
+const clickElement = (element: string = 'a') => {
 
-  function clickRandom(url: string, element: string = 'a') {
+  function simulateClick(elem) {
 
-    function simulateClick(target) {
+    const evt = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: window
+    });
 
-      const event = new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-
-      const canceled = !target.dispatchEvent(event);
-
-    }
-
-    const links = document.querySelectorAll(element)
-    const randomIndex = Math.floor(Math.random() * (links.length - 1) + 1)
-    simulateClick(links[randomIndex])
+    const canceled = !elem.dispatchEvent(evt);
 
   }
 
-  setInterval(async () => {
+  const links = document.querySelectorAll(element)
+  const randomIndex = Math.floor(Math.random() * (links.length - 1) + 1)
 
-    await driver.get(url);
+  simulateClick(links[randomIndex])
+
+}
+
+const clickRandomTarget = async (url: string, keyword: string, interval: number = 5000) => {
+
+  let cookie;
+
+  const driver = await new Builder().forBrowser('chrome').build();
+
+
+  if (cookie) {
+    driver.manage().addCookie(cookie)
+  }
+
+  await driver.get(url);
+
+  let partnerButton = await driver.wait(until.elementLocated(By.id('partner-button')), 5000)
+
+  partnerButton.click()
+
+  let inputs = await driver.wait(until.elementsLocated(By.css("input")))
+
+  await inputs[0].sendKeys('')
+  await inputs[1].sendKeys('')
+
+  await driver.wait(until.elementLocated(By.css("#submit-save"))).click()
+  
+  /**
+   * @todo add auth token
+   */
+  cookie = await driver.manage().getCookies()
+
+  setInterval(async () => {
 
     let currentUrl
     let currentTitle
     try {
       currentUrl = await driver.getCurrentUrl()
       currentTitle = await driver.getTitle()
+
     } catch (error) {
       console.log('error :', error);
     }
 
     try {
       if (currentUrl && currentUrl.includes(keyword)) {
-        await driver.executeScript(clickRandom)
+        await driver.executeScript(clickElement)
       } else {
         await driver.get(url);
       }
@@ -71,6 +100,6 @@ const openPages = async (pages: Array<string>, interval: number = 3000) => {
 (async function errorMine() {
 
 
-  clickRandomTarget('http://bain.localdev:8080/', 'bain')
+  clickRandomTarget('', '')
 
 })();
