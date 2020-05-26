@@ -14,7 +14,7 @@ services:
   qa-dash-web:
     build:
       context: ./.docker/prod/webpack
-    container_name: qa-dash-webpack
+    container_name: qa-dash-web
     volumes:
       - ./web:/app
       - ./web/node_modules:/app/node_modules

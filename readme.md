@@ -2,18 +2,20 @@
 
 Purpose is to load your app's routes, find all click targets; `<a>` or `<button>` tags, then click at random to see if anything triggers an error. Intended to be used with [Sentry.io](https://sentry.io/welcome/) or any custom logger.
 
-## Development Mode
-Start in development mode with `docker-compose -f docker-compose.dev.yaml up --build`. This will create three containers and start them up. First we will start nginx to proxy requests. A container running `webpack-dev-server` will handle default requests. 
-Finally, a container running NodeJS and Express will handle requests to `/api`.
+## Getting Started
+First you'll need [Node](https://nodejs.org/en/) and [Docker](https://www.docker.com/) installed locally on your machine.
 
-## Production Mode
-Start in "production" mode with `docker-compose up --build` create three containers. First we will
-start nginx to proxy requests. A container will bundle the static site by calling `npm run build`. Finally, a container 
-running NodeJS and Express will handle requests to `/api`.
+Once installed, cd into project root, then run `npm run setup`, this will build our Docker containers.
+
+#### Development 
+To start the app for development run `npm run serve`. This is bring up Webpack Dev Server and the Express API with hot reloading.
+
+#### Production
+ To serve the app in production mode: `npm run build`. This will compile the Vue app for production and remove Flow type notations from the API.
 
 ## Built With
 
-- [Express](https://expressjs.com/)
 - [Vue](https://vuejs.org/)
+- [Express](https://expressjs.com/)
 - [Nginx](https://www.nginx.com/)
 - [Docker](https://www.docker.com/)

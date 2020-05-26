@@ -1,0 +1,13 @@
+{
+  "name": "error-miner",
+  "version": "1.0.0",
+  "author": "Drew Althage",
+  "description": "Automated error mining and logging.",
+  "main": "app.js",
+  "scripts": {
+    "setup":"docker-compose build",
+    "serve": "docker-compose -f docker-compose.dev.yaml up",
+    "stop":"docker stop dev-nginx dev-api dev-web",
+    "build": "docker-compose up --build"
+  }
+}

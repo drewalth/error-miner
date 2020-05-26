@@ -2,23 +2,20 @@
  * Setup
  */
 require('dotenv').config()
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
+const app = require('express')()
 const port = process.env.PORT || 3000
 const clickRandomTarget = require('./click-random-target')
 
 /**
  * Parsers
  */
-const urlencodedParser = bodyParser.urlencoded({extended: false})
-
+app.use(require('body-parser').json());
 /**
  * Routes
  */
-app.get('/ping', (req, res) => res.send('pong'));
+app.get('/api/ping', (req, res) => res.send('pong'));
 
-app.post('/random-click', urlencodedParser, async function (req, res) {
+app.post('/api/random-click', async function (req, res) {
   
   /**
    * @todo multiple responses. One at function start and end.
@@ -31,6 +28,6 @@ app.post('/random-click', urlencodedParser, async function (req, res) {
 
 app.listen(port, () => {
 
-  console.log(`App listening on http://localhost:${port}`)
+  console.log(`API listening on http://localhost:${port}`)
 
 })
