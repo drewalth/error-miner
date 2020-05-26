@@ -1,0 +1,35 @@
+version: '2'
+services:
+  qa-dash-nginx:
+    build:
+      context: ./.docker/prod/nginx
+    container_name: qa-dash-nginx
+    links:
+      - qa-dash-api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./web/dist:/usr/share/nginx/html
+  qa-dash-web:
+    build:
+      context: ./.docker/prod/webpack
+    container_name: qa-dash-webpack
+    volumes:
+      - ./web:/app
+      - ./web/node_modules:/app/node_modules
+    command: "npm run build"
+  qa-dash-api:
+    build:
+      context: ./.docker/prod/node
+    container_name: qa-dash-api
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - ./api:/app
+      - ./api/node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    command: "npm run start"
+
