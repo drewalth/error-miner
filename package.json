@@ -6,17 +6,24 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon src/app.js",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "lint": "eslint src/ --fix"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
-    "chromedriver": "^81.0.0",
+    "chromedriver": "^83.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "geckodriver": "^1.19.1",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
   "devDependencies": {
     "eslint": "^7.1.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^2.0.4"
   }
 }

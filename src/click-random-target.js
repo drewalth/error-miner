@@ -1,31 +1,30 @@
-const { Builder, By, until } = require('selenium-webdriver');
-
+const { Builder, By, until } = require('selenium-webdriver')
+const userLogin = require('./user-login')
 /**
- * 
- * @param {string} element 
+ *
+ * @param {string} element
  */
 const clickElement = () => {
   /**
    * custom event to simulate user click
-   * 
+   *
    * @param {*} elem target element to click
    */
-  function simulateClick(elem) {
+  function simulateClick (elem) {
+    /* eslint-disable-next-line no-undef */
     const evt = new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
       view: window
-    });
-    const canceled = !elem.dispatchEvent(evt);
+    })
+    /* eslint-disable-next-line no-unused-vars */
+    const canceled = !elem.dispatchEvent(evt)
   }
 
   /**
    * click targets, either a <a> or <button> tag
-   * @todo increase supported tags then add logic
-   * which handles cases where none of the selected tags 
-   * are found in the document
    */
-  const targets = ['a','button']
+  const targets = ['a', 'button']
   const element = targets[Math.round(Math.random())]
 
   /**
@@ -36,101 +35,62 @@ const clickElement = () => {
   const randomIndex = Math.floor(Math.random() * (links.length - 1) + 1)
 
   simulateClick(links[randomIndex])
-
 }
 
 /**
- * 
- * @param {string} url the url to be tested
- * @param {string} keywords list of keywords found in meta title or url to direct driver
- * @param {string} username login credentials
- * @param {string} password login credentials
- * @param {number} interval time between running crawl and click function
+ *
+ * @param {string} options user provided options defaults set in app.js
  */
-const clickRandomTarget = async (url = '', keywords = '', username = '', password = '', interval = 5000) => {
+const clickRandomTarget = (options) => {
+  options.browsers.forEach(async browser => {
+    const driver = await new Builder().forBrowser(browser).build()
 
-  /**
-   * split keyword list into array to check 
-   * current page url and/or title.
-   */
-  const keywordsArr = keywords.split(',')
+    await driver.get(options.url)
 
-  /**
-   * store the auth token for other browser instances
-   * if the cookie is true, add to browser instance to 
-   * avoid having to login every time.
-   */
-  let cookie;
+    await userLogin(driver, options.username, options.password)
 
-  /**
-   * create the browser instance
-   * @todo turn into an array with a foreach to run crawl and click
-   * in different browsers 
-   * 
-   * ie, const browsers = ['chrome','firefox','webkit']
-   */
-  const driver = await new Builder().forBrowser('chrome').build();
+    let numberOfLoops = 0
 
-  /**
-   * add cookie if available
-   */
-  if (cookie) {
-    driver.manage().addCookie(cookie)
-  }
+    setInterval(async () => {
+      if (numberOfLoops === options.loopLimit) driver.close()
 
-  /**
-   * load the provided url from the http request
-   */
-  await driver.get(url);
+      await driver.wait(until.elementLocated(By.css('body')))
 
-  /**
-   * @note Monigle specific
-   * 
-   * To log into the app, first, need to click the partner button 
-   * to reveal form.
-   * 
-   */
-  let partnerButton = await driver.wait(until.elementLocated(By.id('partner-button')), 5000)
-
-  partnerButton.click()
-
-  let inputs = await driver.wait(until.elementsLocated(By.css("input")))
-
-  await inputs[0].sendKeys(username)
-  await inputs[1].sendKeys(password)
-
-  await driver.wait(until.elementLocated(By.css("#submit-save"))).click()
-
-  await driver.wait(until.elementLocated(By.css('#primary-logo')))
-  
-  /**
-   * once logged in, store the cookie for following browser instances
-   */
-  cookie = await driver.manage().getCookies()
-
-  setInterval(async () => {
-
-    let currentUrl
-    let currentTitle
-    try {
-      currentUrl = await driver.getCurrentUrl()
-      currentTitle = await driver.getTitle()
-    } catch (error) {
-      console.log('error :', error);
-    }
-
-    try {
-
-      if (currentTitle && keywordsArr.indexOf(currentTitle) > -1) {
-        await driver.executeScript(clickElement)
-      } else {
-        await driver.get(url);
+      /**
+       * check to see if the crawler logged itself out,
+       * if so, log back in!
+       */
+      try {
+        const authLayout = await driver.findElement(By.css('#login'))
+        if (authLayout) await userLogin(driver, options.username, options.password)
+      } catch (err) {
+        console.log('err :>> ', err)
       }
-    } catch (err) {
-      console.log('err :', err);
-    }
 
-  }, interval);
+      let currentUrl
+      try {
+        currentUrl = await driver.getCurrentUrl()
+      } catch (error) {
+        console.log('error :', error)
+      }
+
+      /**
+       * check to see if clicked an external link
+       * if so, reload provided url
+       */
+      try {
+        if (currentUrl.includes(options.client)) {
+          await driver.executeScript(clickElement)
+        } else {
+          await driver.get(options.url)
+        }
+      } catch (err) {
+        console.log('err :', err)
+      }
+
+      numberOfLoops++
+    }, options.interval)
+  })
 }
 
 module.exports = clickRandomTarget
