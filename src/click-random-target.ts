@@ -5,7 +5,7 @@ import chalk = require("chalk");
  *
  * @param {string} element
  */
-const clickElement = () => {
+const clickElement = (): void => {
   /**
    * custom event to simulate user click
    *
@@ -16,7 +16,7 @@ const clickElement = () => {
     dispatchEvent: (event: Event) => boolean;
   }
 
-  function simulateClick(elem: SimulateClick) {
+  function simulateClick(elem: SimulateClick): void {
     /* eslint-disable-next-line no-undef */
     const evt = new MouseEvent("click", {
       bubbles: true,
@@ -43,23 +43,21 @@ const clickElement = () => {
   simulateClick(links[randomIndex]);
 };
 
+interface Options {
+  url: string;
+  username: string;
+  password: string;
+  client: string;
+  browsers: string[];
+  loopLimit: number;
+  interval: number;
+}
+
 /**
  *
- * @param {string} options user provided options defaults set in app.js
+ * @param {object} options user provided options defaults set in app.js
  */
-const clickRandomTarget = (userConfig: object) => {
-  const defaults = {
-    url: "",
-    username: "",
-    password: "",
-    client: "",
-    browsers: ["chrome", "firefox"],
-    loopLimit: 10,
-    interval: 5000,
-  };
-
-  const options = Object.assign(defaults, userConfig);
-
+const clickRandomTarget = (options: Options): void => {
   options.browsers.forEach(async (browser: string) => {
     const driver = await new Builder().forBrowser(browser).build();
 
