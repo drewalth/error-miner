@@ -14,9 +14,11 @@ Simple website crawler which finds click targets and clicks at random with the i
 
 **Development**
 
-To development with hot reloading: `npm run dev`
+To start development with cold reloading: `npm run start:dev`
 
 **Production**
+
+Compile the app: `npm run build`
 
 Start the server: `npm run start`
 
