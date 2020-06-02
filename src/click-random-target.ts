@@ -10,7 +10,7 @@ const clickElement = () => {
    *
    * @param {*} elem target element to click
    */
-  function simulateClick (elem) {
+  function simulateClick (elem:object) {
     /* eslint-disable-next-line no-undef */
     const evt = new MouseEvent('click', {
       bubbles: true,
@@ -41,37 +41,51 @@ const clickElement = () => {
  *
  * @param {string} options user provided options defaults set in app.js
  */
-const clickRandomTarget = (options) => {
-  options.browsers.forEach(async browser => {
-    const driver = await new Builder().forBrowser(browser).build()
+const clickRandomTarget = (userConfig: object) => {
 
-    await driver.get(options.url)
+  const defaults = {
+    url: "",
+    username: "",
+    password: "",
+    client: "",
+    browsers: ["chrome", "firefox"],
+    loopLimit: 10,
+    interval: 5000,
+  };
 
-    await userLogin(driver, options.username, options.password)
+  const options = Object.assign(defaults,userConfig);
 
-    let numberOfLoops = 0
+  options.browsers.forEach(async (browser: string) => {
+    const driver = await new Builder().forBrowser(browser).build();
+
+    await driver.get(options.url);
+
+    await userLogin(driver, options.username, options.password);
+
+    let numberOfLoops = 0;
 
     setInterval(async () => {
-      if (numberOfLoops === options.loopLimit) driver.close()
+      if (numberOfLoops === options.loopLimit) driver.close();
 
-      await driver.wait(until.elementLocated(By.css('body')))
+      await driver.wait(until.elementLocated(By.css("body")));
 
       /**
        * check to see if the crawler logged itself out,
        * if so, log back in!
        */
       try {
-        const authLayout = await driver.findElement(By.css('#login'))
-        if (authLayout) await userLogin(driver, options.username, options.password)
+        const authLayout = await driver.findElement(By.css("#login"));
+        if (authLayout)
+          await userLogin(driver, options.username, options.password);
       } catch (err) {
-        console.log('err :>> ', err)
+        console.log("err :>> ", err);
       }
 
-      let currentUrl
+      let currentUrl;
       try {
-        currentUrl = await driver.getCurrentUrl()
+        currentUrl = await driver.getCurrentUrl();
       } catch (error) {
-        console.log('error :', error)
+        console.log("error :", error);
       }
 
       /**
@@ -80,17 +94,17 @@ const clickRandomTarget = (options) => {
        */
       try {
         if (currentUrl.includes(options.client)) {
-          await driver.executeScript(clickElement)
+          await driver.executeScript(clickElement);
         } else {
-          await driver.get(options.url)
+          await driver.get(options.url);
         }
       } catch (err) {
-        console.log('err :', err)
+        console.log("err :", err);
       }
 
-      numberOfLoops++
-    }, options.interval)
-  })
-}
+      numberOfLoops++;
+    }, options.interval);
+  });
+};
 
 module.exports = clickRandomTarget
