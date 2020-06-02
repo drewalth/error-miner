@@ -1,5 +1,6 @@
 const { By, until } = require('selenium-webdriver')
-const userLoginAction = async (driver:object, username:string, password:string) => {
+
+const userLoginAction = async (driver = {}, username:string, password:string) => {
   let loggedIn
   const partnerButton = await driver.wait(until.elementLocated(By.id('partner-button')), 5000)
 
@@ -25,4 +26,4 @@ const userLoginAction = async (driver:object, username:string, password:string) 
   await driver.wait(until.elementLocated(By.css('#primary-logo')))
 }
 
-module.exports = userLoginAction;
+export = userLoginAction;

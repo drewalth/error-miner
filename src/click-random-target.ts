@@ -1,5 +1,6 @@
 const { Builder, By, until } = require('selenium-webdriver')
 const userLogin = require('./user-login')
+import chalk = require('chalk')
 /**
  *
  * @param {string} element
@@ -9,16 +10,21 @@ const clickElement = () => {
    * custom event to simulate user click
    *
    * @param {*} elem target element to click
-   */
-  function simulateClick (elem:object) {
+  */
+
+  interface SimulateClick {
+    dispatchEvent: (event: Event) => boolean
+  }
+
+  function simulateClick(elem = {} as SimulateClick) {
     /* eslint-disable-next-line no-undef */
-    const evt = new MouseEvent('click', {
+    const evt = new MouseEvent("click", {
       bubbles: true,
       cancelable: true,
-      view: window
-    })
+      view: window,
+    });
     /* eslint-disable-next-line no-unused-vars */
-    const canceled = !elem.dispatchEvent(evt)
+    const canceled = !elem.dispatchEvent(evt);
   }
 
   /**
@@ -58,16 +64,25 @@ const clickRandomTarget = (userConfig: object) => {
   options.browsers.forEach(async (browser: string) => {
     const driver = await new Builder().forBrowser(browser).build();
 
+    console.log(chalk.white(`${browser} started.`));
+    
     await driver.get(options.url);
 
     await userLogin(driver, options.username, options.password);
 
     let numberOfLoops = 0;
+    if (numberOfLoops === options.loopLimit) {
+      driver.quit()
+      return
+    }
 
     setInterval(async () => {
-      if (numberOfLoops === options.loopLimit) driver.close();
+      
 
       await driver.wait(until.elementLocated(By.css("body")));
+    
+      let currentUrl = await driver.getCurrentUrl();
+      console.log(chalk.white(`${browser}: ${currentUrl}`));
 
       /**
        * check to see if the crawler logged itself out,
@@ -77,15 +92,8 @@ const clickRandomTarget = (userConfig: object) => {
         const authLayout = await driver.findElement(By.css("#login"));
         if (authLayout)
           await userLogin(driver, options.username, options.password);
-      } catch (err) {
-        console.log("err :>> ", err);
-      }
-
-      let currentUrl;
-      try {
-        currentUrl = await driver.getCurrentUrl();
-      } catch (error) {
-        console.log("error :", error);
+      } catch {
+        console.log(chalk.green("|"));
       }
 
       /**
@@ -98,8 +106,8 @@ const clickRandomTarget = (userConfig: object) => {
         } else {
           await driver.get(options.url);
         }
-      } catch (err) {
-        console.log("err :", err);
+      } catch {
+        console.log(chalk.red("Failed to execute script."));
       }
 
       numberOfLoops++;
@@ -107,4 +115,4 @@ const clickRandomTarget = (userConfig: object) => {
   });
 };
 
-module.exports = clickRandomTarget
+export = clickRandomTarget
