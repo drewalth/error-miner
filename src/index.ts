@@ -10,11 +10,11 @@ const app = express();
 const router = express.Router();
 import bodyParser = require("body-parser");
 const port = process.env.PORT || 3000;
-import chalk = require('chalk')
+import chalk = require("chalk");
 
 import morgan = require("morgan");
 
- const morganMiddleware = morgan(function (tokens, req, res) {
+const morganMiddleware = morgan((tokens, req, res) => {
   return [
     "\n\n\n",
     chalk.hex("#ff4757").bold("🍄  Miner --> "),
@@ -48,14 +48,14 @@ app.use(cors());
 /**
  * Routes
  */
-router.use(function (req, res, next) {
+router.use((req, res, next) => {
   console.log("/" + req.method);
   next();
 });
 
 router.get("/ping", (req, res) => res.send("pong"));
 
-router.post("/random-click", urlencodedParser, async function (req, res) {
+router.post("/random-click", urlencodedParser, async (req, res) => {
   if (!req.body.url) {
     res.send("Error: Must provide URL.").status(422);
   } else if (!req.body.client) {

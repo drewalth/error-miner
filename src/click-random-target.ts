@@ -1,6 +1,6 @@
-const { Builder, By, until } = require('selenium-webdriver')
-const userLogin = require('./user-login')
-import chalk = require('chalk')
+const { Builder, By, until } = require("selenium-webdriver");
+import userLogin = require("./user-login");
+import chalk = require("chalk");
 /**
  *
  * @param {string} element
@@ -10,13 +10,13 @@ const clickElement = () => {
    * custom event to simulate user click
    *
    * @param {*} elem target element to click
-  */
+   */
 
   interface SimulateClick {
-    dispatchEvent: (event: Event) => boolean
+    dispatchEvent: (event: Event) => boolean;
   }
 
-  function simulateClick(elem = {} as SimulateClick) {
+  function simulateClick(elem: SimulateClick) {
     /* eslint-disable-next-line no-undef */
     const evt = new MouseEvent("click", {
       bubbles: true,
@@ -30,25 +30,24 @@ const clickElement = () => {
   /**
    * click targets, either a <a> or <button> tag
    */
-  const targets = ['a', 'button']
-  const element = targets[Math.round(Math.random())]
+  const targets = ["a", "button"];
+  const element = targets[Math.round(Math.random())];
 
   /**
    * find all targets in document then pass a random
    * target to click
    */
-  const links = document.querySelectorAll(element)
-  const randomIndex = Math.floor(Math.random() * (links.length - 1) + 1)
+  const links = document.querySelectorAll(element);
+  const randomIndex = Math.floor(Math.random() * (links.length - 1) + 1);
 
-  simulateClick(links[randomIndex])
-}
+  simulateClick(links[randomIndex]);
+};
 
 /**
  *
  * @param {string} options user provided options defaults set in app.js
  */
 const clickRandomTarget = (userConfig: object) => {
-
   const defaults = {
     url: "",
     username: "",
@@ -59,29 +58,27 @@ const clickRandomTarget = (userConfig: object) => {
     interval: 5000,
   };
 
-  const options = Object.assign(defaults,userConfig);
+  const options = Object.assign(defaults, userConfig);
 
   options.browsers.forEach(async (browser: string) => {
     const driver = await new Builder().forBrowser(browser).build();
 
     console.log(chalk.white(`${browser} started.`));
-    
+
     await driver.get(options.url);
 
     await userLogin(driver, options.username, options.password);
 
     let numberOfLoops = 0;
     if (numberOfLoops === options.loopLimit) {
-      driver.quit()
-      return
+      driver.quit();
+      return;
     }
 
     setInterval(async () => {
-      
-
       await driver.wait(until.elementLocated(By.css("body")));
-    
-      let currentUrl = await driver.getCurrentUrl();
+
+      const currentUrl = await driver.getCurrentUrl();
       console.log(chalk.white(`${browser}: ${currentUrl}`));
 
       /**
@@ -115,4 +112,4 @@ const clickRandomTarget = (userConfig: object) => {
   });
 };
 
-export = clickRandomTarget
+export = clickRandomTarget;
