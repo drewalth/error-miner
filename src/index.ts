@@ -54,13 +54,12 @@ router.get("/ping", (req, res) => res.send("pong"));
 router.post("/random-click", urlencodedParser, async (req, res) => {
   if (!req.body.url) {
     res.send("Error: Must provide URL.").status(422);
-  } else if (!req.body.client) {
-    res.send("Error: Must provide URL.").status(422);
-  } else {
+  }  else {
     res.json({ message: `Crawling and Clicking: ${req.body.url}` }).status(200);
 
     await clickRandomTarget({
       url: req.body.url,
+      keyword: req.body.keyword || "",
       username: req.body.username || "",
       password: req.body.password || "",
       interval: req.body.interval || 5000,

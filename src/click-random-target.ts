@@ -45,6 +45,7 @@ const clickElement = (): void => {
 
 interface Options {
   url: string;
+  keyword: string;
   username: string;
   password: string;
   browsers: string[];
@@ -95,7 +96,7 @@ const clickRandomTarget = (options: Options): void => {
        * if so, reload provided url
        */
       try {
-        if (currentUrl.includes(options.client)) {
+        if (currentUrl.includes(options.keyword)) {
           await driver.executeScript(clickElement);
         } else {
           await driver.get(options.url);

@@ -28,6 +28,7 @@ Start the server: `npm run start`
 
 httpClient.post('{{api_base_url}}/random-click', {
   url: 'http://localhost:8080', // Required
+  keyword: "localhost", // Required
   username: 'foo', // Test user email
   password: 'bar', // Test user password
   browsers: 'firefox,chrome', // Default: 'firefox,chrome'

@@ -1,18 +1,18 @@
 const { By, until } = require('selenium-webdriver')
 
 /**
- * 
+ *
  * User Login
- * 
+ *
  * Incase the crawler logs itself out, use this to log back in!
- * 
+ *
  * @param driver selenium web driver instance
  * @param username of test user
  * @param password of test user
  */
 
 const userLoginAction = async (driver, username: string, password: string) => {
-  
+
   const loginTrigger = await driver.wait(until.elementLocated(By.id('#LOGIN-FORM-TRIGGER')), 5000)
 
   loginTrigger.click()
