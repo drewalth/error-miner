@@ -1,6 +1,8 @@
 # Error Miner
 
-Simple website crawler which finds click targets and clicks at random with the intent of triggering and recording errors with sentry.io or any other logger.
+[![Build Status](https://travis-ci.org/drewalth/error-miner.svg?branch=master)](https://travis-ci.org/drewalth/error-miner)
+
+A simple website crawler which finds click targets in the DOM, `<a>` and `<button>` tags, then clicks at random. Intended to be used in QA or Staging environments to trigger, log, then fix errors which are occurring in production mode.
 
 ## Getting Started
 
