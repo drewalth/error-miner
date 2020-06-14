@@ -47,7 +47,6 @@ interface Options {
   url: string;
   username: string;
   password: string;
-  client: string;
   browsers: string[];
   loopLimit: number;
   interval: number;
