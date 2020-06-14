@@ -38,7 +38,3 @@ httpClient.post('{{api_base_url}}/random-click', {
 })
 
 ```
-
-## Warning
-
-It is not advised to run this crawler on a production site. Since you are impersonating a real user account, It is recommended to create a test user account like: `test-user@foo.com`. Though unlikely, it would be unfortunate if the crawler clicked delete on a resource and then confirmed it.
