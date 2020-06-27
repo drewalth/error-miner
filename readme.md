@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/drewalth/error-miner.svg?branch=master)](https://travis-ci.org/drewalth/error-miner)
 
-A simple website crawler which finds click targets in the DOM, `<a>` and `<button>` tags, then clicks at random. Intended to be used in QA or Staging environments to trigger, log, then fix errors which are occurring in production mode.
+A simple website crawler that finds click targets in the DOM, `<a>` and `<button>` tags, then clicks at random. Intended to be used in QA or Staging environments to trigger, log, then fix errors that may have slipped into production.
 
 ## Getting Started
 
